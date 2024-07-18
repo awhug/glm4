@@ -1,0 +1,77 @@
+### glm4 methods ----
+
+#' @inherit stats::family
+#' @export
+family.glm4 <- function (object, ...) object$family
+
+#' @inherit stats::logLik
+#' @export
+logLik.glm4 <- function (object, ...)
+{
+	if (!missing(...))
+		warning("extra arguments discarded")
+	fam <- family.glm4(object)$family
+	p <- object$rank[1]
+	if (fam %in% c("gaussian", "Gamma", "inverse.gaussian"))
+		p <- p + 1
+	val <- p - object$aic/2
+	attr(val, "nobs") <- sum(!is.na(object$residuals))
+	attr(val, "df") <- p
+	class(val) <- "logLik"
+	val
+}
+
+#' @inherit stats::predict.glm
+#' @export
+predict.glm4 <- function(...) stats:::predict.glm(...)
+
+#' @inherit stats::residuals.glm
+#' @export residuals.glm4
+#' @export
+residuals.glm4 <- function(object, ...) MatrixModels:::residuals(object = object$glm4_fit, ...)
+resid.glm4 <- residuals.glm4
+
+#' @inherit stats::vcov
+#' @export
+vcov.glm4 <- function (object, complete = TRUE, ...) stats:::vcov.summary.glm(summary.glm4(object, ...), complete = complete)
+
+#' @inherit stats::confint
+#' @export
+confint.glm4 <- function (object, parm, level = 0.95, ...)
+{
+	cf <- coef(object)
+	pnames <- names(cf)
+	if (missing(parm))
+		parm <- pnames
+	else if (is.numeric(parm))
+		parm <- pnames[parm]
+	a <- (1 - level)/2
+	a <- c(a, 1 - a)
+	pct <- stats:::format.perc(a, 3)
+	fac <- qnorm(a)
+	ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,
+																														 pct))
+	ses <- sqrt(Matrix::diag(vcov(object)))[parm]
+	ci[] <- cf[parm] + ses %o% fac
+	ci
+}
+
+#' @inherit stats::df.residual
+#' @export
+df.residual.glm4 <- function(object){
+	if (!is(object, "glpModel")){
+		object <- object$glm4_fit
+	}
+	fit <- object
+	rank <- as.numeric(rank.glm4(object))
+	Xdims <- dim(object@pred@X)
+	nobs <- Xdims[1]
+	n.ok <- nobs - sum(object@resp@weights==0)
+	resdf <- n.ok - rank
+	return(resdf)
+}
+
+# Convenience function to get the rank
+#' @export
+rank.glm4 <- function(object) Matrix::rankMatrix(object@pred@X)
+
