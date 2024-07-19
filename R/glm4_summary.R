@@ -48,8 +48,9 @@ summary.glm4 <- function(
 	p <- rank.glm4(fit)
 	if (p > 0){
 		p1 <- 1L:p
-		Qr <- fit@pred@fac
-		covmat.unscaled <- Matrix::chol2inv(Qr)
+		fac <- fit@pred@fac
+		if (is(fac, "Cholesky")) fac <- as(fac, "dtrMatrix")
+		covmat.unscaled <- Matrix::chol2inv(fac)
 		covmat <- dispersion * covmat.unscaled
 		var.cf <- Matrix::diag(covmat)
 		s.err <- sqrt(var.cf)
@@ -72,7 +73,7 @@ summary.glm4 <- function(
 			dimnames(coef.table) <- list(names(coef.p), c(dn,
 																										"t value", "Pr(>|t|)"))
 		}
-		df.f <- ncol(Qr)
+		df.f <- ncol(fac)
 	}
 	else {
 		coef.table <- matrix(nrow=0L, ncol=4L)

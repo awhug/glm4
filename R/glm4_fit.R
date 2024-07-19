@@ -23,11 +23,11 @@ glm4 <- function(formula, data, ...){
 
 	fit <- MatrixModels::glm4(formula, data, ...)
 
-	# Populate the object
+	# Get coef and resid via MM
 	coefficients <- MatrixModels::coef(fit)
 	residuals <- MatrixModels::residuals(fit, type = "working")
 
-	## get family functions:
+	# Get family functions:
 	family <- fit@resp@family
 	variance <- family$variance
 	linkinv  <- family$linkinv
@@ -35,31 +35,41 @@ glm4 <- function(formula, data, ...){
 	aic <- family$aic
 	mu.eta <- family$mu.eta
 
+	# Model outputs
+	## respModule
 	mu <- fit@resp@mu
 	eta <- fit@resp@eta
 	weights <- fit@resp@weights
 	wt <- c(fit@resp@sqrtXwt)^2
 	y <- fit@resp@y
 	offset <- fit@resp@offset
+
+	## predModule
+	X <- fit@pred@X
+
+	# Model characteristics
 	rank <- rank.glm4(fit)
-	call <- fit@call
+	call <- match.call()
 	terms <- stats::terms.formula(formula, data = data)
 	intercept <- attr(terms, "intercept") > 0L
-	contrasts <- attr(fit@pred@X, "contrasts")
-	X <- fit@pred@X
+	contrasts <- attr(X, "contrasts")
+
+	# Res and null DF calculations (as per glm.fit)
 	Xdims <- dim(X)
 	nobs <- Xdims[1]
-	n.ok <- nobs - sum(fit@resp@weights==0)
+	n.ok <- nobs - sum(weights==0)
 	nulldf <- n.ok - as.integer(intercept)
 	resdf <- n.ok - rank
 
 	## calculate null deviance -- corrected in glm() if offset and intercept
-	wtdmu <-
-		if (intercept) sum(weights * y)/sum(weights) else linkinv(offset)
+	wtdmu <- if (intercept)
+			sum(weights * y)/sum(weights)
+		else
+			linkinv(offset)
 	nulldev <- sum(dev.resids(y, wtdmu, weights))
 	dev <- sum(dev.resids(y, mu, weights))
 
-	# For binomial modlels, get n, as called in binomial()$initialize
+	# For binomial models, get n, as called in binomial()$initialize
 	if (family$family == "binomial"){
 		if (NCOL(y) == 1) {
 			n <- rep.int(1, nobs)
@@ -67,15 +77,17 @@ glm4 <- function(formula, data, ...){
 		else if (NCOL(y) == 2) {
 			n <- (y1 <- y[, 1L]) + y[, 2L]
 		}
-		else stop(gettextf("for the '%s' family, y must be a vector of 0 and 1's\nor a 2 column matrix where col 1 is no. successes and col 2 is no. failures",
-											 "binomial"), domain = NA)
+		else stop(
+			gettextf(
+				"for the '%s' family, y must be a vector of 0 and 1's\nor a 2 column matrix where col 1 is no. successes and col 2 is no. failures",
+				"binomial"),
+			domain = NA)
 	}
 
 	# Calculate AIC
-	aic.model <- as.numeric(aic(
-		y, n, mu, weights, dev) + 2*rank)
-	##   ^^ is only required for "binomial" [yuck!]
+	aic.model <- as.numeric(aic(y, n, mu, weights, dev) + 2*rank)
 
+	# Populate list object and return as class "glm4"
 	fit <- list(glm4_fit = fit, coefficients = coefficients, residuals = residuals, fitted.values = mu,
 							family = family, linear.predictors = eta, null.deviance = nulldev, deviance = dev,
 							iter = fit@fitProps$iter, offset = offset, method = "MatrixModels:::glm4",
@@ -83,6 +95,6 @@ glm4 <- function(formula, data, ...){
 							data = data, terms = terms, y = y, call = call, formula = formula,
 							aic = aic.model, rank = rank, prior.weights = weights, weights = wt
 	)
-	class(fit) <- c("glm4") #c(fit$class, c("glm", "lm"))
+	class(fit) <- c("glm4")
 	return(fit)
 }
