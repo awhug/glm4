@@ -73,3 +73,35 @@ df.residual.glm4 <- function(object){
 #' @export
 rank.glm4 <- function(object) Matrix::rankMatrix(object@pred@X)
 
+#' @export
+print.glm4 <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
+	cat("\nCall:  ",
+			paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
+	if(length(coef(x))) {
+		cat("Coefficients")
+		if(is.character(co <- x$contrasts))
+			cat("  [contrasts: ", apply(cbind(names(co),co), 1L, paste, collapse = "="), "]")
+		cat(":\n")
+		print.default(
+			x = format(x$coefficients, digits = digits),
+			print.gap = 2,
+			quote = FALSE)
+	} else cat("No coefficients\n\n")
+	cat("\nDegrees of Freedom:", x$df.null, "Total (i.e. Null); ",
+			x$df.residual, "Residual\n")
+	if(nzchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep = "")
+	cat("Null Deviance:	   ",	format(signif(x$null.deviance, digits)),
+			"\nResidual Deviance:", format(signif(x$deviance, digits)),
+			"\tAIC:", format(signif(x$aic, digits)))
+	cat("\n")
+	invisible(x)
+}
+
+#' @export
+weights.glm4 <- function(object, type = c("prior", "working"), ...){
+	type <- match.arg(type)
+	res <- if(type == "prior") object$prior.weights else object$weights
+	if(is.null(object$na.action)) res
+	else naresid(object$na.action, res)
+}
+
