@@ -49,7 +49,14 @@ summary.glm4 <- function(
 	if (p > 0){
 		p1 <- 1L:p
 		fac <- fit@pred@fac
-		if (is(fac, "Cholesky")) fac <- as(fac, "dtrMatrix")
+		# When sparse = FALSE, fac returns an unnamed dpoMatrix.
+		#	When sparse = TRUE, it returns a named dsCMatrix.
+		# Need to coerce and name dims
+		if (is(fac, "Cholesky")){
+			dnms <- fac@Dimnames
+			fac <- as(fac, "dtrMatrix")
+			rownames(fac) <- colnames(fac) <- dnms[[1]]
+		}
 		covmat.unscaled <- Matrix::chol2inv(fac)
 		covmat <- dispersion * covmat.unscaled
 		var.cf <- Matrix::diag(covmat)
