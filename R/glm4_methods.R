@@ -2,10 +2,12 @@
 
 #' @inherit stats::family
 #' @export
+#' @keywords internal
 family.glm4 <- function (object, ...) object$family
 
 #' @inherit stats::logLik
 #' @export
+#' @keywords internal
 logLik.glm4 <- function (object, ...){
 	if (!missing(...))
 		warning("extra arguments discarded")
@@ -22,20 +24,27 @@ logLik.glm4 <- function (object, ...){
 
 #' @inherit stats::predict.glm
 #' @export
+#' @keywords internal
 predict.glm4 <- function(...) stats:::predict.glm(...)
 
 #' @inherit stats::residuals.glm
-#' @export residuals.glm4
 #' @export
+#' @keywords internal
 residuals.glm4 <- function(object, ...) MatrixModels:::residuals(object = object$glm4_fit, ...)
+
+#' @inherit stats::residuals.glm
+#' @export
+#' @keywords internal
 resid.glm4 <- residuals.glm4
 
 #' @inherit stats::vcov
 #' @export
+#' @keywords internal
 vcov.glm4 <- function (object, complete = TRUE, ...) stats:::vcov.summary.glm(summary.glm4(object, ...), complete = complete)
 
 #' @inherit stats::confint
 #' @export
+#' @keywords internal
 confint.glm4 <- function (object, parm, level = 0.95, ...)
 {
 	cf <- coef(object)
@@ -56,6 +65,7 @@ confint.glm4 <- function (object, parm, level = 0.95, ...)
 
 #' @inherit stats::df.residual
 #' @export
+#' @keywords internal
 df.residual.glm4 <- function(object){
 	if (!is(object, "glpModel")){
 		object <- object$glm4_fit
@@ -70,10 +80,13 @@ df.residual.glm4 <- function(object){
 }
 
 # Convenience function to get the rank
-#' @export
-rank.glm4 <- function(object) Matrix::rankMatrix(object@pred@X)
 
 #' @export
+#' @keywords internal
+rank.glm4 <- function(object) Matrix::rankMatrix(object@pred@X, method = "qr.R")
+
+#' @export
+#' @keywords internal
 print.glm4 <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 	cat("\nCall:  ",
 			paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
@@ -98,6 +111,7 @@ print.glm4 <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 }
 
 #' @export
+#' @keywords internal
 weights.glm4 <- function(object, type = c("prior", "working"), ...){
 	type <- match.arg(type)
 	res <- if(type == "prior") object$prior.weights else object$weights

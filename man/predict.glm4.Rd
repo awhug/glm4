@@ -65,3 +65,4 @@ lines(2^ld, predict(budworm.lg, data.frame(ldose = ld,
 \seealso{
 \code{\link[stats]{glm}}, \code{\link[stats]{SafePrediction}}
 }
+\keyword{internal}

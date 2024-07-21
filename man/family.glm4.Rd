@@ -218,3 +218,4 @@ The design was inspired by S functions of the same names described
   in Hastie & Pregibon (1992) (except \code{quasibinomial} and
   \code{quasipoisson}).
 }
+\keyword{internal}

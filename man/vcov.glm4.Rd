@@ -68,3 +68,4 @@ Returns the variance-covariance matrix of the main parameters of
   some entries of \code{aliased} are true and \code{vc} is of smaller dimension
   than \code{length(aliased)}.
 }
+\keyword{internal}

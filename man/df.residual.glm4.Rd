@@ -27,3 +27,4 @@ This is a generic function which can be used to extract residual
 \seealso{
 \code{\link[stats]{deviance}}, \code{\link[stats]{glm}}, \code{\link[stats]{lm}}.
 }
+\keyword{internal}

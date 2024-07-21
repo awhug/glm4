@@ -90,7 +90,7 @@ glm4 <- function(formula, data, ...){
 	# Populate list object and return as class "glm4"
 	fit <- list(glm4_fit = fit, coefficients = coefficients, residuals = residuals, fitted.values = mu,
 							family = family, linear.predictors = eta, null.deviance = nulldev, deviance = dev,
-							iter = fit@fitProps$iter, offset = offset, method = "MatrixModels:::glm4",
+							iter = fit@fitProps$iter, offset = offset, method = "MatrixModels::glm4",
 							contrasts = contrasts, df.residual = resdf, df.null = nulldf, model = X,
 							data = data, terms = terms, y = y, call = call, formula = formula,
 							aic = aic.model, rank = rank, prior.weights = weights, weights = wt

@@ -58,3 +58,4 @@ confint.default(glm.D93)  # based on asymptotic normality}
 \code{\link[MASS:confint]{confint.glm}} and
   \code{\link[MASS:confint]{confint.nls}} in package \href{https://CRAN.R-project.org/package=MASS}{\pkg{MASS}}.
 }
+\keyword{internal}

@@ -91,3 +91,4 @@ For \code{logLik.lm}:
 \author{
 \enc{José}{Jose} Pinheiro and Douglas Bates
 }
+\keyword{internal}
