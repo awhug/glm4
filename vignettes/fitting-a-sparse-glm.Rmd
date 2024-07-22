@@ -1,0 +1,166 @@
+---
+title: "Fitting a sparse GLM with glm4"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fitting a sparse GLM with glm4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# For reproducibility
+set.seed(6006)
+
+# Set the number of levels
+n_levels <- 3000
+
+# Randomly draw the number of observations per level
+n_obs_lambda <- rgamma(n_levels, 3.1) * 100
+n_obs_per_level <- rpois(n_levels, n_obs_lambda) + 1
+
+# Simulate the mean theta
+prob_per_level <- rbeta(n_levels, 3.1, 4.4)
+
+# For each level, simulate data
+d <- vector(mode = "list", length = n_levels)
+for (l in seq_along(n_obs_per_level)){
+	d[[l]] <- data.frame(
+		y = rbinom(n_obs_per_level[l], 1, prob_per_level[l]),
+		level = l)
+}
+
+# Combine into a data.frame
+df <- do.call("rbind", d)
+df$level <- as.factor(df$level)
+```
+
+# Getting started
+
+To demonstrate the functionality of the `glm4` package, let's generate a large hypothetical data set. This data has 3000 levels of a factor, with a binary outcome, $y$. Each level has somewhere between 1 to over 1000 observations of the outcome, and a unique parameter $p$ for the probability of observing the outcome $1$. 
+
+```{r, echo=FALSE, fig.width=7, fig.height=4, fig.align = 'center'}
+n_obs_total <- sum(n_obs_per_level)
+hist(n_obs_per_level, breaks = 80, 
+		 main = paste(format(n_levels, big.mark = ","), 
+		 						 "levels, total N =", 
+		 						 format(n_obs_total, big.mark = ",")),
+		 xlab = "Number of observations by level")
+```
+
+We are interested in fitting a logistic regression model for the outcome, including all 3000 levels as fixed effects. 
+
+However, the sheer number of factors to be included poses memory problems for a standard `glm` as implemented in the `stats` package distributed with R. Attempting to fit this model using `glm` is liable to either throw a `cannot allocate vector of size ...` error, or crash the R session entirely. 
+
+Instead, we can fit this model using the `glm4` function, which has an interface very similar to `glm`, but setting `sparse = TRUE` to ensure memory efficiency.
+
+```{r}
+library(glm4)
+
+# Fit the model and time it
+run_time <- system.time(
+	fit <- glm4(y ~ level,
+						data = df,
+						family = binomial(),
+						sparse = TRUE)
+)
+
+run_time
+```
+
+This took `r unname(round(run_time['elapsed'], 1))` seconds to fit.
+
+We can briefly inspect the output like so:
+
+```{r}
+options(max.print = 20)
+print(fit)
+```
+
+And we can verify the results
+
+```{r}
+# Take the inverse logit from model coef
+plogis(sum(coef(fit)[1:2]))
+
+# Should be identical to the simple mean
+with(df, mean(y[level == 2]))
+```
+
+```{r, include=FALSE}
+options(max.print = 50)
+```
+
+
+# How it works
+
+The `glm4` function is a wrapper for a function of the same name in the MatrixModels package, `MatrixModels::glm4()`. This function fits a GLM using iteratively reweighted least squares (IRLS) with sparse and dense matrices as implemented in the `Matrix` package, which is widely used and included by default in every R.
+
+The raw output from a call to `MatrixModels::glm4()` is an S4 object with slots:
+
+-  `@resp`: the response module, containing the fitted mean responses, offset, weight matrices etc.
+-  `@pred`: the prediction model, containing the model matrix, coefficient vector, etc.
+-  `@call`: the call to the function;
+-  `@fitProps`: the model fitting details, including convergence criteria, iterations etc
+
+The original `MatrixModels::glm4()` output, with each of these slots and associated objects, is stored in `fit$glm4_fit`. These remain accessible to the user.
+
+
+# Inspecting the output
+
+The MatrixModels package provides no associated print or summary method, so users wanting to inspect coefficients, standard errors, model criteria, and other results are left to handle these themselves.
+
+The `glm4` package fills this gap by providing this functionality, producing a model fit with methods virtually identical to those found for `glm` objects in the `stats` package.
+
+For example, there is a summary method that provides standard errors and test statistics for coefficients, which are not automatically provided or easily produced by `MatrixModels`:
+
+```{r}
+summary(fit)
+```
+
+We can inspect the log-likelihood of the model like so:
+
+```{r}
+logLik(fit)
+```
+
+We can generate confidence intervals for each parameter estimate like so:
+
+```{r}
+confint(fit)[1:20,]
+```
+
+And produce a variance-covariance matrix (in sparse or dense format using the `Matrix` package).
+
+
+# Code to Generate Data used in Example
+
+```{r, eval = FALSE}
+set.seed(6006)
+
+# Set the number of levels
+n_levels <- 3000
+
+# Randomly draw the number of observations per level
+n_obs_lambda <- rgamma(n_levels, 3.1) * 100
+n_obs_per_level <- rpois(n_levels, n_obs_lambda) + 1
+
+# Simulate the mean theta
+prob_per_level <- rbeta(n_levels, 3.1, 4.4)
+
+# For each level, simulate data
+d <- vector(mode = "list", length = n_levels)
+for (l in seq_along(n_obs_per_level)){
+	d[[l]] <- data.frame(
+		y = rbinom(n_obs_per_level[l], 1, prob_per_level[l]),
+		level = l)
+}
+
+# Combine into a data.frame
+df <- do.call("rbind", d)
+df$level <- as.factor(df$level)
+```
