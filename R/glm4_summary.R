@@ -5,9 +5,10 @@
 #'
 #' @usage
 #' ## S3 method for class 'glm4'
-#' summary(object, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
+#' summary(object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
 #'
 #' @param object an object of class "glm4"
+#' @param p.adjust returns p-values adjusted using one of several methods implemented in `stats::p.adjust`. Defaults to `NULL` for no adjustment, consistent with `stats::glm`.
 #' @param dispersion the dispersion parameter for the family used. Either a single numerical value or NULL (the default), when it is inferred from object (see `stats::summary.glm()` details).
 #' @param correlation logical; if `TRUE`, the correlation matrix of the estimated parameters is returned and printed.
 #' @param ... further arguments passed to or from other methods.
@@ -20,7 +21,7 @@
 #' @export
 
 summary.glm4 <- function(
-		object, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE,
+		object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE,
 		...)
 {
 	fit <- object$glm4_fit
@@ -79,6 +80,10 @@ summary.glm4 <- function(
 			coef.table <- cbind(coef.p, NaN, NaN, NaN)
 			dimnames(coef.table) <- list(names(coef.p), c(dn,
 																										"t value", "Pr(>|t|)"))
+		}
+		# Adjust the p.value
+		if (!is.null(p.adjust)){
+			coef.table[,4] <- stats::p.adjust(coef.table[,4], method = p.adjust)
 		}
 		df.f <- ncol(fac)
 	}

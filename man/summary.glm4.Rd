@@ -5,10 +5,12 @@
 \title{Summarising Generalized Linear Models Using Sparse Matrices}
 \usage{
 ## S3 method for class 'glm4'
-summary(object, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
+summary(object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
 }
 \arguments{
 \item{object}{an object of class "glm4"}
+
+\item{p.adjust}{returns p-values adjusted using one of several methods implemented in `stats::p.adjust`. Defaults to `NULL` for no adjustment, consistent with `stats::glm`.}
 
 \item{dispersion}{the dispersion parameter for the family used. Either a single numerical value or NULL (the default), when it is inferred from object (see `stats::summary.glm()` details).}
 
