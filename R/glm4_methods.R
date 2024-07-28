@@ -119,3 +119,17 @@ weights.glm4 <- function(object, type = c("prior", "working"), ...){
 	else naresid(object$na.action, res)
 }
 
+#' @export
+#' @keywords internal
+model.matrix.glm4 <- function(object, Matrix = FALSE){
+	if (!is(object, "glm4")){
+		stop("Model has not been fit using glm4/MatrixModels")
+	}
+	mm <- object$model
+	if (!Matrix){
+		assign_vals <- attr(mm, "assign")
+		mm <- as.matrix(mm)
+		attr(mm, "assign") <- assign_vals
+	}
+	return(mm)
+}
