@@ -36,26 +36,30 @@ Computes confidence intervals for one or more parameters in a fitted
   For objects of class \code{"lm"} the direct formulae based on \eqn{t}
   values are used.
 
-  There are stub methods in package \pkg{stats} for classes \code{"glm"}
-  and \code{"nls"} which call those in package \href{https://CRAN.R-project.org/package=MASS}{\pkg{MASS}} (if
-  installed): if the \href{https://CRAN.R-project.org/package=MASS}{\pkg{MASS}} namespace has been loaded, its
-  methods will be used directly.  (Those methods are based on profile
-  likelihood.)
+  Methods for classes \code{"glm"}
+  and \code{"nls"} call the appropriate profile method,
+  then find the confidence intervals by interpolation in the profile
+  traces.  If the profile object is already available it can be used
+  as the main argument rather than the fitted model object itself.
 }
 \examples{
 fit <- lm(100/mpg ~ disp + hp + wt + am, data = mtcars)
 confint(fit)
 confint(fit, "wt")
 
-\donttest{## from example(glm)
+## from example(glm)
 counts <- c(18,17,15,20,10,20,25,13,12)
 outcome <- gl(3, 1, 9); treatment <- gl(3, 3)
 glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
-confint(glm.D93) # needs MASS to be installed
-confint.default(glm.D93)  # based on asymptotic normality}
+confint(glm.D93) 
+confint.default(glm.D93)  # based on asymptotic normality
+}
+\references{
+Venables, W. N. and Ripley, B. D. (2002)
+  \emph{Modern Applied Statistics with S.} Fourth edition.  Springer.
 }
 \seealso{
-\code{\link[MASS:confint]{confint.glm}} and
-  \code{\link[MASS:confint]{confint.nls}} in package \href{https://CRAN.R-project.org/package=MASS}{\pkg{MASS}}.
+Original versions: \code{\link[MASS]{confint.glm}} and
+  \code{\link[MASS]{confint.nls}} in package \href{https://CRAN.R-project.org/package=MASS}{\pkg{MASS}}.
 }
 \keyword{internal}

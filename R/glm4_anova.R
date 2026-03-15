@@ -1,3 +1,5 @@
+#' @inherit stats::anova.glm
+#' @export
 anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 	dotargs <- list(...)
 	named <- if (is.null(names(dotargs)))
@@ -124,6 +126,7 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 	structure(table, heading = title, class = c("anova", "data.frame"))
 }
 
+#' @keywords internal
 anova.glm4list <- function(object, dispersion = NULL, test = NULL) {
 	responses <- vapply(object, function(x) deparse(x$formula[[2L]]), character(1))
 	sameresp <- responses == responses[1L]
