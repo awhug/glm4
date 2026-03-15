@@ -8,7 +8,7 @@ Description: Fits GLMs with sparse and dense 'Matrix' matrices for memory effici
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Imports: 
     Matrix,
     MatrixModels,

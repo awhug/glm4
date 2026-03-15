@@ -83,7 +83,7 @@ For \code{logLik.lm}:
   \ifelse{text}{doi:10.2307/2334370 <https://doi.org/10.2307/2334370>}{\ifelse{latex}{\href{https://doi.org/10.2307/2334370}{doi:10.2307\out{\\slash{}}2334370}}{\href{https://doi.org/10.2307/2334370}{doi:10.2307/2334370}}}.
 }
 \seealso{
-\code{\link[nlme:logLik.lme]{logLik.gls}}, \code{\link[nlme]{logLik.lme}}, in
+\code{\link[nlme]{logLik.gls}}, \code{\link[nlme]{logLik.lme}}, in
   package \href{https://CRAN.R-project.org/package=nlme}{\pkg{nlme}}, etc.
 
   \code{\link[stats]{AIC}}

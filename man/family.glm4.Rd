@@ -52,7 +52,10 @@ An object of class \code{"family"} (which has a concise print method).
     called by the \code{"lm"} method of \code{\link[stats]{simulate}}.  It will
     normally return a matrix with \code{nsim} columns and one row for
     each fitted value, but it can also return a list of length
-    \code{nsim}. Clearly this will be missing for \sQuote{quasi-} families.}
+    \code{nsim}. Clearly this will be missing for \sQuote{quasi-}
+    families.}
+  \item{dispersion}{(optional since \R version 4.3.0) numeric: value of the
+    dispersion parameter, if fixed, or \code{NA_real_} if free.}
 }
 \description{
 Family objects provide a convenient way to specify the details of the
@@ -80,8 +83,9 @@ Family objects provide a convenient way to specify the details of the
   The \code{quasibinomial} and \code{quasipoisson} families differ from
   the \code{binomial} and \code{poisson} families only in that the
   dispersion parameter is not fixed at one, so they can model
-  over-dispersion.  For the binomial case see McCullagh and Nelder
-  (1989, pp.\ifelse{latex}{\out{~}}{ }{}124--8).  Although they show that there is (under some
+  over-dispersion.  For the binomial case see
+  McCullagh and Nelder (1989, pp.\ifelse{latex}{\out{~}}{ }{}124--8).
+  Although they show that there is (under some
   restrictions) a model with
   variance proportional to mean as in the quasi-binomial model, note
   that \code{glm} does not compute maximum-likelihood estimates in that
