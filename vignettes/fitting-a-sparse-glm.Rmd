@@ -1,5 +1,7 @@
 ---
 title: "Fitting a sparse GLM with glm4"
+author: "Angus Hughes"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Fitting a sparse GLM with glm4}
@@ -62,10 +64,7 @@ This matrix is extremely sparse: each row contains exactly one `1` (for its fact
 library(glm4)
 
 run_time <- system.time(
-	fit <- glm4(y ~ level,
-						data = df,
-						family = binomial(),
-						sparse = TRUE)
+	fit <- glm4(y ~ level, data = df, family = binomial(), sparse = TRUE)
 )
 
 run_time
@@ -97,7 +96,7 @@ options(max.print = 50)
 
 # How it works
 
-`glm4()` is a wrapper for `MatrixModels::glm4()`, which fits GLMs using iteratively reweighted least squares (IRLS) with support for both dense and sparse matrix arithmetic via the `Matrix` package. `Matrix` is a recommended package distributed with every R installation.
+`glm4()` is a wrapper for `MatrixModels::glm4()`, which fits GLMs using iteratively reweighted least squares (IRLS) with support for both dense and sparse matrix arithmetic via the `Matrix` package (distributed with every R installation).
 
 The raw output of `MatrixModels::glm4()` is an S4 object of class `"glpModel"` with four slots:
 
