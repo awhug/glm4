@@ -16,11 +16,9 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 
 	varlist <- attr(object$terms, "variables")
 	response <- as.character(varlist[-1L])[1L]
-
-	# Get model matrix as a base matrix with assign attribute intact
-	x <- model.matrix(object)
-	varseq <- attr(x, "assign")
-	nvars <- max(0, varseq)
+	tl <- attr(object$terms, "term.labels")
+	nvars <- length(tl)
+	n <- NROW(object$y)
 	resdev <- resdf <- NULL
 
 	if (nvars > 1) {
@@ -31,30 +29,24 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 			y <- object$fitted.values + object$residuals * mu.eta(eta)
 		}
 
-		# Always assign y_ outside the if/else to fix scoping bug
-		y_ <- cbind(y)
-		colnames(y_) <- response
-
 		# Pre-extract dev.resids for use inside the loop
 		dev.resids <- object$family$dev.resids
 
 		# Reconstruct a fresh family object from the stored name+link.
 		family_ <- do.call(object$family$family, list(link = object$family$link))
+		is_sparse <- is(object$model, "sparseMatrix")
 
-		for (i in seq_len(max(nvars - 1L, 0))) {
-			x_sub <- x[, varseq <= i, drop = FALSE]
-
-			# make.names() converts "(Intercept)" -> "X.Intercept." for formula use
-			safe_nm <- make.names(colnames(x_sub))
-			colnames(x_sub) <- safe_nm
-			df_ <- data.frame(y_ = y, x_sub, check.names = FALSE)
-			form_sub <- reformulate(safe_nm, response = "y_", intercept = FALSE)
+		for (i in seq_len(nvars - 1L)) {
+			# Refit using a sub-formula on the original data so that
+			# MatrixModels builds its own sparse model matrix internally.
+			sub_formula <- reformulate(tl[seq_len(i)], response = response)
 
 			# Define fit arguments to pass to MatrixModels::glm4
-			fit_args <- list(formula = form_sub, data = df_, family = family_)
-			if (length(object$prior.weights) == NROW(y))
+			fit_args <- list(formula = sub_formula, data = object$data,
+							 family = family_, sparse = is_sparse)
+			if (length(object$prior.weights) == n)
 				fit_args$weights <- object$prior.weights
-			if (length(object$offset) == NROW(y) && any(object$offset != 0))
+			if (length(object$offset) == n && any(object$offset != 0))
 				fit_args$offset <- object$offset
 			fit_s4 <- do.call(MatrixModels::glm4, fit_args)
 
@@ -75,7 +67,6 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 		`Resid. Dev` = resdev,
 		check.names = FALSE
 	)
-	tl <- attr(object$terms, "term.labels")
 	if (length(tl) == 0L) table <- table[1, , drop = FALSE]
 	rownames(table) <- c("NULL", tl)
 
@@ -117,11 +108,11 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 				warning("using F test with a fixed dispersion is inappropriate")
 		}
 		table <- stats:::stat.anova(
-			table = table, 
-			test = test, 
+			table = table,
+			test = test,
 			scale = dispersion,
-			df.scale = df.dispersion, 
-			n = NROW(x))
+			df.scale = df.dispersion,
+			n = n)
 	}
 	structure(table, heading = title, class = c("anova", "data.frame"))
 }
@@ -170,6 +161,6 @@ anova.glm4list <- function(object, dispersion = NULL, test = NULL) {
 
 	structure(
 		table,
-		heading = c("Analysis of Deviance Table\n", topnote),
+		heading = c("Analysis of Deviance Table (glm4)\n", topnote),
 		class = c("anova", "data.frame"))
 }
