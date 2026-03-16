@@ -1,5 +1,7 @@
 ---
 title: "Fitting a sparse GLM with glm4"
+author: "Angus Hughes"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Fitting a sparse GLM with glm4}
@@ -23,7 +25,7 @@ n_levels <- 3000
 n_obs_lambda <- rgamma(n_levels, 3.1) * 100
 n_obs_per_level <- rpois(n_levels, n_obs_lambda) + 1
 
-# Simulate the mean theta
+# Simulate the mean probability per level
 prob_per_level <- rbeta(n_levels, 3.1, 4.4)
 
 # For each level, simulate data
@@ -41,32 +43,28 @@ df$level <- as.factor(df$level)
 
 # Getting started
 
-To demonstrate the functionality of the `glm4` package, let's generate a large hypothetical data set. This data has 3000 levels of a factor, with a binary outcome, $y$. Each level has somewhere between 1 to over 1000 observations of the outcome, and a unique parameter $p$ for the probability of observing the outcome $1$. 
+To demonstrate the `glm4` package, let's generate a large hypothetical dataset. This data has `r format(n_levels, big.mark = ",")` levels of a factor and a binary outcome $y$. Each level has somewhere between 1 to over 1000 observations of the outcome and an average success probability.
 
 ```{r, echo=FALSE, fig.width=7, fig.height=4, fig.align = 'center'}
 n_obs_total <- sum(n_obs_per_level)
-hist(n_obs_per_level, breaks = 80, 
-		 main = paste(format(n_levels, big.mark = ","), 
-		 						 "levels, total N =", 
+hist(n_obs_per_level, breaks = 80,
+		 main = paste(format(n_levels, big.mark = ","),
+		 						 "levels, total N =",
 		 						 format(n_obs_total, big.mark = ",")),
 		 xlab = "Number of observations by level")
 ```
 
-We are interested in fitting a logistic regression model for the outcome, including all 3000 levels as fixed effects. 
+We are interested in fitting a logistic regression that includes all `r format(n_levels, big.mark=",")` factor levels as fixed effects. The model matrix has `r format(n_obs_total, big.mark=",")` rows and `r format(n_levels + 1L, big.mark=",")` columns — one per factor level plus an intercept.
 
-However, the sheer number of factors to be included poses memory problems for a standard `glm` as implemented in the `stats` package distributed with R. Attempting to fit this model using `glm` is liable to either throw a `cannot allocate vector of size ...` error, or crash the R session entirely. 
+This matrix is extremely sparse: each row contains exactly one `1` (for its factor level) and `r format(n_levels, big.mark=",")` zeros. In practice, on many machines calling `stats::glm()` here will either throw a `cannot allocate vector of size ...` error due to RAM constraints or crash the R session entirely.
 
-Instead, we can fit this model using the `glm4` function, which has an interface very similar to `glm`, but setting `sparse = TRUE` to ensure memory efficiency.
+`glm4()` with `sparse = TRUE` stores and operates on only the non-zero elements of the model matrix, making model fitting possible.
 
 ```{r}
 library(glm4)
 
-# Fit the model and time it
 run_time <- system.time(
-	fit <- glm4(y ~ level,
-						data = df,
-						family = binomial(),
-						sparse = TRUE)
+	fit <- glm4(y ~ level, data = df, family = binomial(), sparse = TRUE)
 )
 
 run_time
@@ -74,20 +72,20 @@ run_time
 
 This took `r unname(round(run_time['elapsed'], 1))` seconds to fit.
 
-We can briefly inspect the output like so:
+We can briefly inspect the output:
 
 ```{r}
 options(max.print = 20)
 print(fit)
 ```
 
-And we can verify the results
+For a saturated factor model, the model-implied probability for each level equals the observed proportion exactly. We can verify this: the inverse-logit of the level-specific linear predictor should match the raw sample mean.
 
 ```{r}
-# Take the inverse logit from model coef
+# Model-implied probability for level 2
 plogis(sum(coef(fit)[1:2]))
 
-# Should be identical to the simple mean
+# Should equal the observed proportion
 with(df, mean(y[level == 2]))
 ```
 
@@ -98,25 +96,25 @@ options(max.print = 50)
 
 # How it works
 
-The `glm4` function is a wrapper for a function of the same name in the MatrixModels package, `MatrixModels::glm4()`. This function fits a GLM using iteratively reweighted least squares (IRLS) with sparse and dense matrices as implemented in the `Matrix` package, which is widely used and included by default in every R.
+`glm4()` is a wrapper for `MatrixModels::glm4()`, which fits GLMs using iteratively reweighted least squares (IRLS) with support for both dense and sparse matrix arithmetic via the `Matrix` package (distributed with every R installation).
 
-The raw output from a call to `MatrixModels::glm4()` is an S4 object with slots:
+The raw output of `MatrixModels::glm4()` is an S4 object of class `"glpModel"` with four slots:
 
--  `@resp`: the response module, containing the fitted mean responses, offset, weight matrices etc.
--  `@pred`: the prediction model, containing the model matrix, coefficient vector, etc.
--  `@call`: the call to the function;
--  `@fitProps`: the model fitting details, including convergence criteria, iterations etc
+- `@resp` (`glmRespMod`): the response module. Key sub-slots are `@y` (response vector), `@mu` (fitted means), `@eta` (linear predictor), `@offset`, `@weights` (prior weights), and `@sqrtXwt` (square root of the IRLS working weights, stored as a matrix to accommodate the sparse case).
+- `@pred` (`dPredModule` when `sparse = FALSE`, `sPredModule` when `sparse = TRUE`): the prediction module. Contains `@X` (the model matrix as a dense or sparse `Matrix` object), `@coef` (coefficient vector), and `@fac` (the Cholesky factorisation of $X^\top W X$ used at each IRLS step).
+- `@call`: the original function call.
+- `@fitProps`: a list of convergence diagnostics — `convcrit` (final convergence criterion), `iter` (number of IRLS iterations), and `nHalvings` (step-halvings performed).
 
-The original `MatrixModels::glm4()` output, with each of these slots and associated objects, is stored in `fit$glm4_fit`. These remain accessible to the user.
+The `glm4` package unpacks this S4 object and assembles a familiar S3 list that closely mirrors the structure of a `stats::glm` object. The original `"glpModel"` S4 fit is preserved in `fit$glm4_fit` and remains accessible for users who need lower-level access.
+
+```{r}
+class(fit$glm4_fit)
+```
 
 
 # Inspecting the output
 
-The MatrixModels package provides no associated print or summary method, so users wanting to inspect coefficients, standard errors, model criteria, and other results are left to handle these themselves.
-
-The `glm4` package fills this gap by providing this functionality, producing a model fit with methods virtually identical to those found for `glm` objects in the `stats` package.
-
-For example, there is a summary method that provides standard errors and test statistics for coefficients, which are not automatically provided or easily produced by `MatrixModels`:
+`MatrixModels` provides no print, summary, or inference methods. The `glm4` package fills this gap. The summary method provides coefficients, standard errors, and test statistics that mirror a standard R GLM as closely as possible:
 
 ```{r}
 summary(fit)
@@ -134,33 +132,69 @@ We can generate confidence intervals for each parameter estimate like so:
 confint(fit)[1:20,]
 ```
 
-And produce a variance-covariance matrix (in sparse or dense format using the `Matrix` package).
+The variance-covariance matrix is returned as a sparse `Matrix` object, which is memory-efficient for large models:
+
+```{r}
+vcov(fit)[1:5, 1:5]
+```
 
 
-# Code to Generate Data used in Example
+# Analysis of deviance with `anova`
+
+## Sequential deviance: single model
+
+Out of the box, `MatrixModels`provides no model comparison functionality. This is implemented in `glm4`. 
+
+For a single model with multiple predictors, `anova()` adds terms one at a time and reports the reduction in residual deviance at each step (consistent with `anova.glm`). To illustrate, we add a simulated continuous covariate `x` to the data and refit:
+
+```{r}
+set.seed(6006)
+
+# Add covariate and fit
+df$x <- rnorm(nrow(df))
+fit_x <- glm4(y ~ x + level, data = df, family = binomial(), sparse = TRUE)
+
+# glm4 anova method
+anova(fit_x)
+```
+
+The test statistic is chosen automatically from the family, matching `stats::anova.glm` behaviour: `"F"` for families with an estimated dispersion (Gaussian, Gamma, …) and `"Chisq"` for families with a fixed dispersion (binomial, Poisson). For binomial models this means a likelihood-ratio $\chi^2$ test. We can also request it explicitly:
+
+```{r}
+anova(fit_x, test = "Chisq")
+```
+
+The small deviance reduction for `x` (and non-significant $p$-value) is consistent with `x` being pure noise.
+
+## Model comparison: multiple models
+
+Passing two or more `glm4` objects to `anova()` produces a model comparison table, equivalent to a likelihood-ratio test between nested models:
+
+```{r}
+anova(fit, fit_x, test = "Chisq")
+```
+
+The output format and behaviour match `stats::anova.glm`, so results can be interpreted and handled identically to those from a standard `glm` workflow.
+
+
+# Code to generate the example data
 
 ```{r, eval = FALSE}
 set.seed(6006)
 
-# Set the number of levels
 n_levels <- 3000
 
-# Randomly draw the number of observations per level
-n_obs_lambda <- rgamma(n_levels, 3.1) * 100
+n_obs_lambda    <- rgamma(n_levels, 3.1) * 100
 n_obs_per_level <- rpois(n_levels, n_obs_lambda) + 1
+prob_per_level  <- rbeta(n_levels, 3.1, 4.4)
 
-# Simulate the mean theta
-prob_per_level <- rbeta(n_levels, 3.1, 4.4)
-
-# For each level, simulate data
 d <- vector(mode = "list", length = n_levels)
-for (l in seq_along(n_obs_per_level)){
+for (l in seq_along(n_obs_per_level)) {
 	d[[l]] <- data.frame(
-		y = rbinom(n_obs_per_level[l], 1, prob_per_level[l]),
+		y     = rbinom(n_obs_per_level[l], 1, prob_per_level[l]),
 		level = l)
 }
 
-# Combine into a data.frame
-df <- do.call("rbind", d)
+df       <- do.call("rbind", d)
 df$level <- as.factor(df$level)
 ```
