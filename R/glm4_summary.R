@@ -29,15 +29,12 @@ summary.glm4 <- function(
 	df.r <- df.residual.glm4(fit)
 	mod.residuals <- MatrixModels::residuals(fit, type = "working")
 	if (is.null(dispersion))
-		dispersion <- if (object$family$family %in% c("poisson",
-																									"binomial"))
-			1
+		dispersion <- if (object$family$family %in% c("poisson", "binomial")) 1
 	else if (df.r > 0) {
 		est.disp <- TRUE
 		if (any(object$weights == 0))
 			warning("observations with zero weight not used for calculating dispersion")
-		sum((object$weights * mod.residuals^2)[object$weights >
-																					 	0])/df.r
+		sum((object$weights * mod.residuals^2)[object$weights > 0])/df.r
 	}
 	else {
 		est.disp <- TRUE
@@ -67,19 +64,16 @@ summary.glm4 <- function(
 		if (!est.disp) {
 			pvalue <- 2 * pnorm(-abs(tvalue))
 			coef.table <- cbind(coef.p, s.err, tvalue, pvalue)
-			dimnames(coef.table) <- list(names(coef.p), c(dn,
-																										"z value", "Pr(>|z|)"))
+			dimnames(coef.table) <- list(names(coef.p), c(dn, "z value", "Pr(>|z|)"))
 		}
 		else if (df.r > 0) {
 			pvalue <- 2 * pt(-abs(tvalue), df.r)
 			coef.table <- cbind(coef.p, s.err, tvalue, pvalue)
-			dimnames(coef.table) <- list(names(coef.p), c(dn,
-																										"t value", "Pr(>|t|)"))
+			dimnames(coef.table) <- list(names(coef.p), c(dn, "t value", "Pr(>|t|)"))
 		}
 		else {
 			coef.table <- cbind(coef.p, NaN, NaN, NaN)
-			dimnames(coef.table) <- list(names(coef.p), c(dn,
-																										"t value", "Pr(>|t|)"))
+			dimnames(coef.table) <- list(names(coef.p), c(dn, "t value", "Pr(>|t|)"))
 		}
 		# Adjust the p.value
 		if (!is.null(p.adjust)){
@@ -89,8 +83,7 @@ summary.glm4 <- function(
 	}
 	else {
 		coef.table <- matrix(nrow=0L, ncol=4L)
-		dimnames(coef.table) <- list(NULL, c("Estimate", "Std. Error",
-																				 "t value", "Pr(>|t|)"))
+		dimnames(coef.table) <- list(NULL, c("Estimate", "Std. Error", "t value", "Pr(>|t|)"))
 		covmat.unscaled <- covmat <- matrix(nrow=0L, ncol=0L)
 		df.f <- length(aliased)
 	}
@@ -98,22 +91,24 @@ summary.glm4 <- function(
 	## return answer
 
 	## these need not all exist, e.g. na.action.
-	keep <- match(c("call","terms","family","deviance", "aic",
-									"contrasts", "df.residual","null.deviance","df.null",
-									"iter", "na.action"), names(object), 0L)
-	ans <- c(object[keep],
-					 list(deviance.resid = MatrixModels::residuals(fit, type = "deviance"),
-					 		 coefficients = coef.table,
-					 		 aliased = aliased,
-					 		 dispersion = dispersion,
-					 		 df = c(object$rank, df.r, df.f),
-					 		 cov.unscaled = covmat.unscaled,
-					 		 cov.scaled = covmat))
+	keep <- match(c(
+		"call","terms","family","deviance", "aic",
+		"contrasts", "df.residual","null.deviance","df.null",
+		"iter", "na.action"), names(object), 0L)
+	ans <- c(
+		object[keep],
+		list(deviance.resid = MatrixModels::residuals(fit, type = "deviance"),
+		coefficients = coef.table,
+		aliased = aliased,
+		dispersion = dispersion,
+		df = c(object$rank, df.r, df.f),
+		cov.unscaled = covmat.unscaled,
+		cov.scaled = covmat)
+	)
 
 	if(correlation && p > 0) {
 		dd <- sqrt(diag(covmat.unscaled))
-		ans$correlation <-
-			covmat.unscaled/outer(dd,dd)
+		ans$correlation <- covmat.unscaled/outer(dd,dd)
 		ans$symbolic.cor <- symbolic.cor
 	}
 
