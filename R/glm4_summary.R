@@ -25,21 +25,9 @@ summary.glm4 <- function(
 		...)
 {
 	fit <- object$glm4_fit
-	est.disp <- FALSE
 	df.r <- df.residual.glm4(fit)
-	mod.residuals <- MatrixModels::residuals(fit, type = "working")
-	if (is.null(dispersion))
-		dispersion <- if (object$family$family %in% c("poisson", "binomial")) 1
-	else if (df.r > 0) {
-		est.disp <- TRUE
-		if (any(object$weights == 0))
-			warning("observations with zero weight not used for calculating dispersion")
-		sum((object$weights * mod.residuals^2)[object$weights > 0])/df.r
-	}
-	else {
-		est.disp <- TRUE
-		NaN
-	}
+	est.disp <- is.null(dispersion) && !(object$family$family %in% c("poisson", "binomial"))
+	dispersion <- dispersion.glm4(object, dispersion)
 
 	coef.p <- MatrixModels::coef(fit)
 	aliased <- is.na(coef.p)
