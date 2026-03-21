@@ -150,6 +150,46 @@ dispersion.glm4 <- function(object, dispersion = NULL) {
 	}
 }
 
+#' @inherit stats::nobs
+#' @export
+#' @keywords internal
+nobs.glm4 <- function(object, ...) sum(!is.na(object$residuals))
+
+#' @inherit stats::deviance
+#' @export
+#' @keywords internal
+deviance.glm4 <- function(object, ...) object$deviance
+
+#' @inherit stats::formula
+#' @export
+#' @keywords internal
+formula.glm4 <- function(x, ...) x$formula
+
+#' @inherit stats::sigma
+#' @export
+#' @keywords internal
+sigma.glm4 <- function(object, ...) sqrt(dispersion.glm4(object))
+
+#' @inherit stats::extractAIC
+#' @export
+#' @keywords internal
+extractAIC.glm4 <- function(fit, scale = 0, k = 2, ...) {
+	edf <- fit$rank
+	c(edf, fit$aic + (k - 2) * edf)
+}
+
+#' @inherit stats::model.frame
+#' @export
+#' @keywords internal
+model.frame.glm4 <- function(formula, ...) {
+	model.frame(formula$terms, formula$data)
+}
+
+#' @inherit stats::labels
+#' @export
+#' @keywords internal
+labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
+
 ### influence methods ----
 
 # All three measures share the hat values h_i = w_i * x_i^T (X^TWX)^{-1} x_i,
