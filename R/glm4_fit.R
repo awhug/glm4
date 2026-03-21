@@ -87,6 +87,17 @@ glm4 <- function(formula, data, ...){
 	# Calculate AIC
 	aic.model <- as.numeric(aic(y, n, mu, weights, dev) + 2*rank)
 
+	# Attach observation names (row names of data) to vectors, matching stats::glm behaviour
+	obs_names <- rownames(data)
+	if (!is.null(obs_names)) {
+		names(residuals) <- obs_names
+		names(mu) <- obs_names
+		names(eta) <- obs_names
+		names(y) <- obs_names
+		names(wt) <- obs_names
+		names(weights) <- obs_names
+	}
+
 	# Populate list object and return as class "glm4"
 	fit <- list(glm4_fit = fit, coefficients = coefficients, residuals = residuals, fitted.values = mu,
 							family = family, linear.predictors = eta, null.deviance = nulldev, deviance = dev,

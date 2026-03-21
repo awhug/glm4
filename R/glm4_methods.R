@@ -135,6 +135,22 @@ model.matrix.glm4 <- function(object, Matrix = FALSE){
 	return(mm)
 }
 
+#' @inherit stats::case.names
+#' @export
+#' @keywords internal
+case.names.glm4 <- function(object, full = FALSE, ...) {
+	w <- weights(object)
+	dn <- names(object$residuals)
+	if (full || is.null(w)) dn else dn[w != 0]
+}
+
+#' @inherit stats::variable.names
+#' @export
+#' @keywords internal
+variable.names.glm4 <- function(object, full = FALSE, ...) {
+	if (full) colnames(model.matrix(object)) else names(coef(object))
+}
+
 #' @keywords internal
 dispersion.glm4 <- function(object, dispersion = NULL) {
 	if (!is.null(dispersion)) return(dispersion)
