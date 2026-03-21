@@ -16,6 +16,8 @@ summary(object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symboli
 
 \item{correlation}{logical; if `TRUE`, the correlation matrix of the estimated parameters is returned and printed.}
 
+\item{symbolic.cor}{logical; if `TRUE`, and `correlation` is `TRUE`, the correlation matrix is printed in symbolic form.}
+
 \item{...}{further arguments passed to or from other methods.}
 }
 \value{

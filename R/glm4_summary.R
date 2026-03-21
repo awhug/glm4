@@ -11,6 +11,7 @@
 #' @param p.adjust returns p-values adjusted using one of several methods implemented in `stats::p.adjust`. Defaults to `NULL` for no adjustment, consistent with `stats::glm`.
 #' @param dispersion the dispersion parameter for the family used. Either a single numerical value or NULL (the default), when it is inferred from object (see `stats::summary.glm()` details).
 #' @param correlation logical; if `TRUE`, the correlation matrix of the estimated parameters is returned and printed.
+#' @param symbolic.cor logical; if `TRUE`, and `correlation` is `TRUE`, the correlation matrix is printed in symbolic form.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @details

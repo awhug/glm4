@@ -2,20 +2,21 @@
 
 ## Overview
 
-`glm4` is an R package for fitting generalised linear models (GLMs) on large, high-dimensional datasets where standard approaches run out of memory.
+`glm4` is an R package to help fit and evaluate generalised linear models (GLMs) on large, high-dimensional datasets where standard approaches run out of memory.
 
-This package adds functionality to `MatrixModels::glm4()`, which does the core work of fiting GLMs using iteratively reweighted least squares (IRLS) with support for sparse matrix arithmetic via the `Matrix` package. When a model includes many factor levels (for example, thousands of fixed effects) the usual dense format model matrix can require tens or hundreds of gigabytes of RAM. Sparse storage keeps only the non-zero elements, making fitting and working with these models more feasible.
+This package adds functionality to `MatrixModels::glm4()`, which does the core work of fiting GLMs using iteratively reweighted least squares (IRLS) with support for sparse matrix operations via the `Matrix` package. When a model includes many factor levels (for example, thousands of fixed effects) the usual dense format model matrix can require tens or hundreds of gigabytes of RAM. Sparse storage keeps only the non-zero elements, making fitting and working with these models more feasible.
 
-The raw output of `MatrixModels::glm4()` is a bare-bones S4 object with no print, summary, or inference methods. `glm4` fills that gap by wrapping the fit in a familiar S3 object with the same structure and methods as a standard `stats::glm` fit, including:
+The raw output of `MatrixModels::glm4()` however is a bare-bones S4 object with no print, summary, or inference methods familiar to R users of the standard `stats` package. `glm4` fills these gaps by wrapping the fit in a familiar S3 object with the same general structure of a `stats::glm` fit, and adding methods and functions including (but not limited to):
 
-- `print()` and `summary()` — coefficients, standard errors, and test statistics
-- `logLik()`, `AIC()`
-- `confint()` — Wald confidence intervals
-- `vcov()` — variance-covariance matrix (returned as a sparse `Matrix`)
-- `predict()`, `residuals()`
-- `anova()` — sequential deviance analysis and multi-model comparison, matching `stats::anova.glm` output exactly
+- `print()` and `summary()` - to examine coefficients, standard errors, and test statistics
+- `logLik()`, `deviance()`, `AIC()` - to extract information criteria components
+- `confint()` - to calculate Wald confidence intervals on model parameters
+- `vcov()` - to return a variance-covariance matrix (returned as a `Matrix`)
+- `predict()`, `residuals()` - to inspect various forms of model predictions and prediction error
+- `anova()` - for sequential deviance analysis and multi-model comparison
+- `hatvalues()`, `influence()`, `rstandard()`, `cooks.distance()` - for model diagnostics based on leverage and influence measures
 
-The interface is intentionally close to `stats::glm()`. In most cases, switching from `glm()` to `glm4()` requires only adding `sparse = TRUE`.
+The interface is intentionally close to `stats::glm()` and associated methods and functions. Switching from `glm()` to `glm4()` should give virtually identical results, and fitting very sparse models requires only setting `sparse = TRUE`.
 
 ## Installation
 

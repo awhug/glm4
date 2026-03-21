@@ -34,5 +34,7 @@ A list object of class `glm4`. See `stats::glm()` for more details on returned c
 It is very similar to the standard `stats::glm()` function, but supports sparse matrices via the Matrix package, which can dramatically improve memory and computational efficiency on large and/or high-dimensional data.
 }
 \details{
-This function is a wrapper for `MatrixModels::glm4()` which returns an more user-friendly object designed to resemble `stats::glm()` as closely as possible. Behind the scenes, it extracts the relevant model details from the S4 class `MatrixModels::glm4()` object and calculates new ones where necessary (e.g. AIC, deviance, residual degrees of freedom, etc) as per `stats::glm()`.
+This function is a wrapper for `MatrixModels::glm4()` which returns a more user-friendly object designed to resemble `stats::glm()` as closely as possible. Behind the scenes, it extracts the relevant model details from the S4 class `MatrixModels::glm4()` object and calculates new ones where necessary (e.g. AIC, deviance, residual degrees of freedom, etc) as per `stats::glm()`.
+
+Sparse matrix storage is not enabled by default; pass `sparse = TRUE` to use it.
 }

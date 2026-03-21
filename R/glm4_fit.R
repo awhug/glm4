@@ -14,7 +14,9 @@
 #' @inheritParams MatrixModels::glm4
 #'
 #' @details
-#' This function is a wrapper for `MatrixModels::glm4()` which returns an more user-friendly object designed to resemble `stats::glm()` as closely as possible. Behind the scenes, it extracts the relevant model details from the S4 class `MatrixModels::glm4()` object and calculates new ones where necessary (e.g. AIC, deviance, residual degrees of freedom, etc) as per `stats::glm()`.
+#' This function is a wrapper for `MatrixModels::glm4()` which returns a more user-friendly object designed to resemble `stats::glm()` as closely as possible. Behind the scenes, it extracts the relevant model details from the S4 class `MatrixModels::glm4()` object and calculates new ones where necessary (e.g. AIC, deviance, residual degrees of freedom, etc) as per `stats::glm()`.
+#'
+#' Sparse matrix storage is not enabled by default; pass `sparse = TRUE` to use it.
 #'
 #' @returns A list object of class `glm4`. See `stats::glm()` for more details on returned components.
 #' @export
@@ -99,12 +101,13 @@ glm4 <- function(formula, data, ...){
 	}
 
 	# Populate list object and return as class "glm4"
-	fit <- list(glm4_fit = fit, coefficients = coefficients, residuals = residuals, fitted.values = mu,
-							family = family, linear.predictors = eta, null.deviance = nulldev, deviance = dev,
-							iter = fit@fitProps$iter, offset = offset, method = "MatrixModels::glm4",
-							contrasts = contrasts, df.residual = resdf, df.null = nulldf, model = X,
-							data = data, terms = terms, y = y, call = call, formula = formula,
-							aic = aic.model, rank = rank, prior.weights = weights, weights = wt
+	fit <- list(
+		glm4_fit = fit, coefficients = coefficients, residuals = residuals, fitted.values = mu,
+		family = family, linear.predictors = eta, null.deviance = nulldev, deviance = dev,
+		iter = fit@fitProps$iter, offset = offset, method = "MatrixModels::glm4",
+		contrasts = contrasts, df.residual = resdf, df.null = nulldf, model = X,
+		data = data, terms = terms, y = y, call = call, formula = formula,
+		aic = aic.model, rank = rank, prior.weights = weights, weights = wt
 	)
 	class(fit) <- c("glm4")
 	return(fit)

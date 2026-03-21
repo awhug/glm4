@@ -201,7 +201,6 @@ model.frame.glm4 <- function(formula, ...) {
 	model.frame(formula$terms, formula$data)
 }
 
-#' @inherit stats::labels
 #' @export
 #' @keywords internal
 labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
@@ -211,6 +210,9 @@ labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
 # All three measures share the hat values h_i = w_i * x_i^T (X^TWX)^{-1} x_i,
 # computed via the Cholesky factor in glm4_fit
 
+#' @inherit stats::hatvalues
+#' @param batch_size integer; number of rows processed per batch when the model matrix is sparse. Reduce if memory is limited.
+#' @param verbose logical; if `TRUE`, a progress bar is printed during the batched sparse computation.
 #' @export
 #' @keywords internal
 hatvalues.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
@@ -249,6 +251,9 @@ hatvalues.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 	h
 }
 
+#' @inherit stats::influence
+#' @param batch_size integer; passed to `hatvalues.glm4()`.
+#' @param verbose logical; passed to `hatvalues.glm4()`.
 #' @export
 #' @keywords internal
 influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
@@ -262,6 +267,7 @@ influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 
 # rstandard and cooks.distance broadly follow stats package
 
+#' @inherit stats::rstandard
 #' @export
 #' @keywords internal
 rstandard.glm4 <- function(model,
@@ -274,6 +280,7 @@ rstandard.glm4 <- function(model,
 	r
 }
 
+#' @inherit stats::cooks.distance
 #' @export
 #' @keywords internal
 cooks.distance.glm4 <- function(model, infl = influence.glm4(model), ...) {
