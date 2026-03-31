@@ -4,10 +4,12 @@
 \alias{df.residual.glm4}
 \title{Residual Degrees-of-Freedom}
 \usage{
-\method{df.residual}{glm4}(object)
+\method{df.residual}{glm4}(object, ...)
 }
 \arguments{
 \item{object}{an object for which the degrees-of-freedom are desired.}
+
+\item{...}{additional optional arguments.}
 }
 \value{
 The value of the residual degrees-of-freedom extracted from the object

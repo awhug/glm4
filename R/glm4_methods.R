@@ -1,11 +1,19 @@
 ### glm4 methods ----
 
+# Consolidated imports for all stats generics used as S3 methods below.
+# Without these, namespace loading fails when stats is not yet attached.
+#' @importFrom stats anova confint deviance df.residual extractAIC family
+#' @importFrom stats formula logLik model.frame model.matrix nobs predict
+#' @importFrom stats resid residuals sigma vcov weights
+NULL
+
 #' @inherit stats::family
 #' @export
 #' @keywords internal
 family.glm4 <- function (object, ...) object$family
 
 #' @inherit stats::logLik
+#' @examples NULL
 #' @export
 #' @keywords internal
 logLik.glm4 <- function (object, ...){
@@ -25,12 +33,12 @@ logLik.glm4 <- function (object, ...){
 #' @inherit stats::predict.glm
 #' @export
 #' @keywords internal
-predict.glm4 <- function(...) stats:::predict.glm(...)
+predict.glm4 <- function(...) stats::predict.glm(...)
 
 #' @inherit stats::residuals.glm
 #' @export
 #' @keywords internal
-residuals.glm4 <- function(object, ...) MatrixModels:::residuals(object = object$glm4_fit, ...)
+residuals.glm4 <- function(object, ...) MatrixModels::residuals(object = object$glm4_fit, ...)
 
 #' @inherit stats::residuals.glm
 #' @export
@@ -67,7 +75,7 @@ confint.glm4 <- function (object, parm, level = 0.95, ...)
 #' @inherit stats::df.residual
 #' @export
 #' @keywords internal
-df.residual.glm4 <- function(object){
+df.residual.glm4 <- function(object, ...){
 	if (!is(object, "glpModel")){
 		object <- object$glm4_fit
 	}
@@ -82,7 +90,6 @@ df.residual.glm4 <- function(object){
 
 # Convenience function to get the rank
 
-#' @export
 #' @keywords internal
 rank.glm4 <- function(object) Matrix::rankMatrix(object@pred@X, method = "qr.R")
 
@@ -122,7 +129,7 @@ weights.glm4 <- function(object, type = c("prior", "working"), ...){
 
 #' @export
 #' @keywords internal
-model.matrix.glm4 <- function(object, Matrix = FALSE){
+model.matrix.glm4 <- function(object, Matrix = FALSE, ...){
 	if (!is(object, "glm4")){
 		stop("Model has not been fit using glm4/MatrixModels")
 	}
@@ -136,6 +143,7 @@ model.matrix.glm4 <- function(object, Matrix = FALSE){
 }
 
 #' @inherit stats::case.names
+#' @importFrom stats case.names
 #' @export
 #' @keywords internal
 case.names.glm4 <- function(object, full = FALSE, ...) {
@@ -145,6 +153,7 @@ case.names.glm4 <- function(object, full = FALSE, ...) {
 }
 
 #' @inherit stats::variable.names
+#' @importFrom stats variable.names
 #' @export
 #' @keywords internal
 variable.names.glm4 <- function(object, full = FALSE, ...) {
@@ -157,7 +166,7 @@ dispersion.glm4 <- function(object, dispersion = NULL) {
 	if (object$family$family %in% c("poisson", "binomial")) return(1)
 	df.r <- object$df.residual
 	if (df.r > 0) {
-		mod.residuals <- MatrixModels:::residuals(object$glm4_fit, type = "working")
+		mod.residuals <- MatrixModels::residuals(object$glm4_fit, type = "working")
 		if (any(object$weights == 0))
 			warning("observations with zero weight not used for calculating dispersion")
 		sum((object$weights * mod.residuals^2)[object$weights > 0]) / df.r
@@ -213,6 +222,7 @@ labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
 #' @inherit stats::hatvalues
 #' @param batch_size integer; number of rows processed per batch when the model matrix is sparse. Reduce if memory is limited.
 #' @param verbose logical; if `TRUE`, a progress bar is printed during the batched sparse computation.
+#' @importFrom stats hatvalues
 #' @export
 #' @keywords internal
 hatvalues.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
@@ -254,6 +264,7 @@ hatvalues.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 #' @inherit stats::influence
 #' @param batch_size integer; passed to `hatvalues.glm4()`.
 #' @param verbose logical; passed to `hatvalues.glm4()`.
+#' @importFrom stats influence
 #' @export
 #' @keywords internal
 influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
@@ -261,13 +272,14 @@ influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 	disp <- dispersion.glm4(model)
 	Vmu <- model$family$variance(model$fitted.values)
 	pear <- (model$y - model$fitted.values) * sqrt(model$prior.weights) / sqrt(Vmu)
-	dev.res <- as.numeric(MatrixModels:::residuals(model$glm4_fit, type = "deviance"))
+	dev.res <- as.numeric(MatrixModels::residuals(model$glm4_fit, type = "deviance"))
 	list(hat = h, pear.res = pear, dev.res = dev.res, dispersion = disp)
 }
 
 # rstandard and cooks.distance broadly follow stats package
 
 #' @inherit stats::rstandard
+#' @importFrom stats rstandard
 #' @export
 #' @keywords internal
 rstandard.glm4 <- function(model,
@@ -281,6 +293,7 @@ rstandard.glm4 <- function(model,
 }
 
 #' @inherit stats::cooks.distance
+#' @importFrom stats cooks.distance
 #' @export
 #' @keywords internal
 cooks.distance.glm4 <- function(model, infl = influence.glm4(model), ...) {

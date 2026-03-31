@@ -3,10 +3,6 @@
 #' @description
 #' Generates a summary of the `glm4` object to evaluate coefficients, standard errors, model fit criteria, etc.
 #'
-#' @usage
-#' ## S3 method for class 'glm4'
-#' summary(object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
-#'
 #' @param object an object of class "glm4"
 #' @param p.adjust returns p-values adjusted using one of several methods implemented in `stats::p.adjust`. Defaults to `NULL` for no adjustment, consistent with `stats::glm`.
 #' @param dispersion the dispersion parameter for the family used. Either a single numerical value or NULL (the default), when it is inferred from object (see `stats::summary.glm()` details).
@@ -18,7 +14,6 @@
 #' This function is designed to resemble `stats::summary.glm()` as closely as possible. It calculates the (un)scaled variance-covariance matrix from a `MatrixModels::glm4()` object using `Matrix::chol2inv()` and produces a coefficient table for easy inspection of model parameters.
 #'
 #' @returns A list object of class `c("summary.glm", "summary.glm4")`. See `stats::summary.glm()` for more details on returned components.
-#' @export summary.glm4
 #' @export
 
 summary.glm4 <- function(

@@ -4,11 +4,7 @@
 \alias{glm4}
 \title{Fitting Generalized Linear Models Using Sparse Matrices}
 \usage{
-glm4(formula, family, data, weights, subset, na.action,
-start = NULL, etastart, mustart, offset,
-sparse = FALSE, drop.unused.levels = FALSE, doFit = TRUE,
-control = list(\dots),
-model = TRUE, x = FALSE, y = TRUE, contrasts = NULL, \dots)
+glm4(formula, data, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{"\link{formula}"} (or one that

@@ -1,4 +1,6 @@
 #' @inherit stats::anova.glm
+#' @param object an object of class "glm4"
+#' @param ... additional objects of class "glm4" for multi-model comparison
 #' @export
 anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 	dotargs <- list(...)

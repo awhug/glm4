@@ -5,12 +5,6 @@
 #'
 #' It is very similar to the standard `stats::glm()` function, but supports sparse matrices via the Matrix package, which can dramatically improve memory and computational efficiency on large and/or high-dimensional data.
 #'
-#' @usage glm4(formula, family, data, weights, subset, na.action,
-#' start = NULL, etastart, mustart, offset,
-#' sparse = FALSE, drop.unused.levels = FALSE, doFit = TRUE,
-#' control = list(\dots),
-#' model = TRUE, x = FALSE, y = TRUE, contrasts = NULL, \dots)
-#'
 #' @inheritParams MatrixModels::glm4
 #'
 #' @details

@@ -7,6 +7,10 @@
 \method{anova}{glm4}(object, ..., dispersion = NULL, test = NULL)
 }
 \arguments{
+\item{object}{an object of class "glm4"}
+
+\item{...}{additional objects of class "glm4" for multi-model comparison}
+
 \item{dispersion}{the dispersion parameter for the fitting family.
     By default it is obtained from the object(s).}
 

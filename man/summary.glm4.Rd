@@ -4,8 +4,14 @@
 \alias{summary.glm4}
 \title{Summarising Generalized Linear Models Using Sparse Matrices}
 \usage{
-## S3 method for class 'glm4'
-summary(object, p.adjust = NULL, dispersion = NULL, correlation = FALSE, symbolic.cor = FALSE, ...)
+\method{summary}{glm4}(
+  object,
+  p.adjust = NULL,
+  dispersion = NULL,
+  correlation = FALSE,
+  symbolic.cor = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{an object of class "glm4"}
