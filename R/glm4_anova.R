@@ -14,7 +14,7 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 	is.glm4 <- vapply(dotargs, function(x) inherits(x, "glm4"), NA)
 	dotargs <- dotargs[is.glm4]
 	if (length(dotargs))
-		return(anova.glm4list(c(list(object), dotargs), dispersion = dispersion, test = test))
+		return(.anova_glm4_multimodel(c(list(object), dotargs), dispersion = dispersion, test = test))
 
 	varlist <- attr(object$terms, "variables")
 	response <- as.character(varlist[-1L])[1L]
@@ -109,7 +109,7 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 			else
 				warning("using F test with a fixed dispersion is inappropriate")
 		}
-		table <- stats:::stat.anova(
+		table <- stats::stat.anova(
 			table = table,
 			test = test,
 			scale = dispersion,
@@ -120,7 +120,7 @@ anova.glm4 <- function(object, ..., dispersion = NULL, test = NULL) {
 }
 
 #' @keywords internal
-anova.glm4list <- function(object, dispersion = NULL, test = NULL) {
+.anova_glm4_multimodel <- function(object, dispersion = NULL, test = NULL) {
 	responses <- vapply(object, function(x) deparse(x$formula[[2L]]), character(1))
 	sameresp <- responses == responses[1L]
 	if (!all(sameresp)) {
@@ -152,7 +152,7 @@ anova.glm4list <- function(object, dispersion = NULL, test = NULL) {
 		bigmodel <- object[[length(object)]]
 		disp_val <- if (is.null(dispersion)) summary(bigmodel)$dispersion else dispersion
 		df.dispersion <- if (disp_val == 1) Inf else resdf[length(resdf)]
-		table <- stats:::stat.anova(
+		table <- stats::stat.anova(
 			table = table, 
 			test = test, 
 			scale = disp_val, 

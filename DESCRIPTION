@@ -8,7 +8,8 @@ Description: Fits GLMs with sparse and dense 'Matrix' matrices for memory effici
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 7.3.3
-Imports: 
+Imports:
+    methods,
     Matrix,
     MatrixModels,
     stats

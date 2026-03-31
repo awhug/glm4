@@ -5,6 +5,8 @@
 #' @importFrom stats anova confint deviance df.residual extractAIC family
 #' @importFrom stats formula logLik model.frame model.matrix nobs predict
 #' @importFrom stats resid residuals sigma vcov weights
+#' @importFrom stats coef naprint naresid pnorm pt qnorm reformulate stat.anova
+#' @importFrom methods as is
 NULL
 
 #' @inherit stats::family
@@ -48,7 +50,19 @@ resid.glm4 <- residuals.glm4
 #' @inherit stats::vcov
 #' @export
 #' @keywords internal
-vcov.glm4 <- function (object, complete = TRUE, ...) stats:::vcov.summary.glm(summary.glm4(object, ...), complete = complete)
+vcov.glm4 <- function(object, complete = TRUE, ...) {
+	s <- summary.glm4(object, ...)
+	vc <- s$cov.scaled
+	if (complete && any(s$aliased)) {
+		nms <- names(s$aliased)
+		vc2 <- matrix(NA_real_, nrow = length(nms), ncol = length(nms),
+			dimnames = list(nms, nms))
+		ok <- !s$aliased
+		vc2[ok, ok] <- as.matrix(vc)
+		return(vc2)
+	}
+	vc
+}
 
 #' @inherit stats::confint
 #' @export
