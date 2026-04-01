@@ -26,19 +26,7 @@
     \code{dispersion} parameter.}
 }
 \value{
-A matrix of the estimated covariances between the parameter estimates
-  in the linear or non-linear predictor of the model.  This should have
-  row and column names corresponding to the parameter names given by the
-  \code{\link[stats]{coef}} method.
-
-  When some coefficients of the (linear) model are undetermined and
-  hence \code{NA} because of linearly dependent terms (or an
-  \dQuote{over specified} model), also called
-  \dQuote{aliased}, see \code{\link[stats]{alias}}, then since \R version 3.5.0,
-  \code{vcov()} (iff \code{complete = TRUE}, i.e., by default for
-  \code{lm} etc, but not for \code{aov}) contains corresponding rows and
-  columns of \code{NA}s, wherever \code{\link[stats]{coef}()} has always
-  contained such \code{NA}s.
+A matrix (or sparse `Matrix`) of estimated covariances between coefficient estimates.
 }
 \description{
 Returns the variance-covariance matrix of the main parameters of
@@ -67,5 +55,9 @@ Returns the variance-covariance matrix of the main parameters of
   \code{vc} by \code{\link{NA}} rows and columns where needed, i.e., when
   some entries of \code{aliased} are true and \code{vc} is of smaller dimension
   than \code{length(aliased)}.
+}
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+vcov(fit)
 }
 \keyword{internal}

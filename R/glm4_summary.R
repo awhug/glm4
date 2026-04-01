@@ -13,7 +13,10 @@
 #' @details
 #' This function is designed to resemble `stats::summary.glm()` as closely as possible. It calculates the (un)scaled variance-covariance matrix from a `MatrixModels::glm4()` object using `Matrix::chol2inv()` and produces a coefficient table for easy inspection of model parameters.
 #'
-#' @returns A list object of class `c("summary.glm", "summary.glm4")`. See `stats::summary.glm()` for more details on returned components.
+#' @return A list object of class `c("summary.glm", "summary.glm4")`. See `stats::summary.glm()` for more details on returned components.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' summary(fit)
 #' @export
 
 summary.glm4 <- function(

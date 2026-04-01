@@ -12,8 +12,7 @@
 \item{...}{additional optional arguments.}
 }
 \value{
-The value of the residual degrees-of-freedom extracted from the object
-  \code{x}.
+An integer giving the residual degrees of freedom.
 }
 \description{
 Returns the residual degrees-of-freedom extracted from a fitted model
@@ -25,6 +24,10 @@ This is a generic function which can be used to extract residual
   functions for details on how to use this function.
 
   The default method just extracts the \code{df.residual} component.
+}
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+df.residual(fit)
 }
 \seealso{
 \code{\link[stats]{deviance}}, \code{\link[stats]{glm}}, \code{\link[stats]{lm}}.

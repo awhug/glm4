@@ -12,7 +12,10 @@
 #'
 #' Sparse matrix storage is not enabled by default; pass `sparse = TRUE` to use it.
 #'
-#' @returns A list object of class `glm4`. See `stats::glm()` for more details on returned components.
+#' @return A list object of class `glm4`. See `stats::glm()` for more details on returned components.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' print(fit)
 #' @export
 
 glm4 <- function(formula, data, ...){

@@ -35,3 +35,7 @@ Generates a summary of the `glm4` object to evaluate coefficients, standard erro
 \details{
 This function is designed to resemble `stats::summary.glm()` as closely as possible. It calculates the (un)scaled variance-covariance matrix from a `MatrixModels::glm4()` object using `Matrix::chol2inv()` and produces a coefficient table for easy inspection of model parameters.
 }
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+summary(fit)
+}

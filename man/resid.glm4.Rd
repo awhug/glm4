@@ -12,6 +12,9 @@
 
 \item{...}{further arguments passed to or from other methods.}
 }
+\value{
+A numeric vector of residuals.
+}
 \description{
 These functions are all \code{\link{methods}} for class \code{glm} or
   \code{summary.glm} objects.
@@ -31,6 +34,10 @@ The references define the types of residuals: Davison & Snell is a
 
   For fits done with \code{y = FALSE} the response values are computed
   from other components.
+}
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+resid(fit)
 }
 \references{
 Davison, A. C. and Snell, E. J. (1991)

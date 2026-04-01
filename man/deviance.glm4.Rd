@@ -12,7 +12,7 @@
 \item{...}{additional optional argument.}
 }
 \value{
-The value of the deviance extracted from the object \code{object}.
+A numeric scalar giving the model deviance.
 }
 \description{
 Returns the deviance of a fitted model object.
@@ -21,6 +21,10 @@ Returns the deviance of a fitted model object.
 This is a generic function which can be used to extract deviances for
   fitted models.  Consult the individual modeling functions for details
   on how to use this function.
+}
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+deviance(fit)
 }
 \references{
 Chambers, J. M. and Hastie, T. J. (1992)

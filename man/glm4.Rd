@@ -34,3 +34,7 @@ This function is a wrapper for `MatrixModels::glm4()` which returns a more user-
 
 Sparse matrix storage is not enabled by default; pass `sparse = TRUE` to use it.
 }
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+print(fit)
+}

@@ -38,16 +38,28 @@ logLik.glm4 <- function (object, ...){
 predict.glm4 <- function(...) stats::predict.glm(...)
 
 #' @inherit stats::residuals.glm
+#' @return A numeric vector of residuals.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' residuals(fit)
 #' @export
 #' @keywords internal
 residuals.glm4 <- function(object, ...) MatrixModels::residuals(object = object$glm4_fit, ...)
 
 #' @inherit stats::residuals.glm
+#' @return A numeric vector of residuals.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' resid(fit)
 #' @export
 #' @keywords internal
 resid.glm4 <- residuals.glm4
 
 #' @inherit stats::vcov
+#' @return A matrix (or sparse `Matrix`) of estimated covariances between coefficient estimates.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' vcov(fit)
 #' @export
 #' @keywords internal
 vcov.glm4 <- function(object, complete = TRUE, ...) {
@@ -87,6 +99,10 @@ confint.glm4 <- function (object, parm, level = 0.95, ...)
 }
 
 #' @inherit stats::df.residual
+#' @return An integer giving the residual degrees of freedom.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' df.residual(fit)
 #' @export
 #' @keywords internal
 df.residual.glm4 <- function(object, ...){
@@ -190,11 +206,19 @@ dispersion.glm4 <- function(object, dispersion = NULL) {
 }
 
 #' @inherit stats::nobs
+#' @return An integer giving the number of observations used in model fitting.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' nobs(fit)
 #' @export
 #' @keywords internal
 nobs.glm4 <- function(object, ...) sum(!is.na(object$residuals))
 
 #' @inherit stats::deviance
+#' @return A numeric scalar giving the model deviance.
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' deviance(fit)
 #' @export
 #' @keywords internal
 deviance.glm4 <- function(object, ...) object$deviance
@@ -236,6 +260,7 @@ labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
 #' @inherit stats::hatvalues
 #' @param batch_size integer; number of rows processed per batch when the model matrix is sparse. Reduce if memory is limited.
 #' @param verbose logical; if `TRUE`, a progress bar is printed during the batched sparse computation.
+#' @return A numeric vector of hat values (leverages), one per observation.
 #' @importFrom stats hatvalues
 #' @export
 #' @keywords internal
@@ -293,6 +318,7 @@ influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 # rstandard and cooks.distance broadly follow stats package
 
 #' @inherit stats::rstandard
+#' @return A numeric vector of standardised residuals, one per observation.
 #' @importFrom stats rstandard
 #' @export
 #' @keywords internal
@@ -307,6 +333,7 @@ rstandard.glm4 <- function(model,
 }
 
 #' @inherit stats::cooks.distance
+#' @return A numeric vector of Cook's distances, one per observation.
 #' @importFrom stats cooks.distance
 #' @export
 #' @keywords internal

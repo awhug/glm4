@@ -12,7 +12,7 @@
 \item{...}{further arguments to be passed to methods.}
 }
 \value{
-A single number, normally an integer.  Could be \code{NA}.
+An integer giving the number of observations used in model fitting.
 }
 \description{
 Extract the number of \sQuote{observations} from a model fit.  This is
@@ -35,6 +35,10 @@ This is a generic function, with an S4 generic in package \pkg{stats4}.
 
   For \code{lm}, \code{glm} and \code{nls} fits, observations with zero
   weight are not included.
+}
+\examples{
+fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+nobs(fit)
 }
 \seealso{
 \code{\link[stats]{AIC}}.

@@ -2,9 +2,16 @@ Package: glm4
 Type: Package
 Title: Fitting Generalized Linear Models Using Sparse Matrices
 Version: 0.1.0
-Author: Angus Hughes
-Maintainer: Angus Hughes <angus-hughes+glm4@outlook.com>
-Description: Fits GLMs with sparse and dense 'Matrix' matrices for memory efficiency. Acts as a wrapper for the 'glm4()' function in the 'MatrixModels' package, but adds convenient model inspection methods designed to mimic the functionality associated with the 'glm' function from the 'stats' package, including calculating standard errors, model criteria, coefficient test statistics, etc.
+Authors@R: person("Angus", "Hughes", role = c("aut", "cre", "cph"),
+    email = "angus-hughes+glm4 AT outlook.com",
+    comment = c(ORCID = "0000-0002-0428-4085"))
+Description: Fits Generalised Linear Models (GLMs) with sparse and dense
+    'Matrix' matrices for memory efficiency. Acts as a wrapper for the
+    glm4() function in the 'MatrixModels' package <doi:10.32614/CRAN.package.MatrixModels>, but adds convenient
+    model inspection methods designed to mimic the functionality
+    associated with the glm() function from the 'stats' package,
+    including calculating standard errors, model criteria, and coefficient
+    test statistics.
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 7.3.3

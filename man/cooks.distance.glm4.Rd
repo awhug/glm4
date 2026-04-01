@@ -17,6 +17,9 @@
 
 \item{...}{further arguments passed to or from other methods.}
 }
+\value{
+A numeric vector of Cook's distances, one per observation.
+}
 \description{
 This suite of functions can be used to compute some of the regression
   (leave-one-out deletion) diagnostics for linear and generalized linear
