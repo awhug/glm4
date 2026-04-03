@@ -132,31 +132,14 @@ stopifnot(all.equal(imI$infmat[,"cook.d"],
 }
 \references{
 Belsley, D. A., Kuh, E. and Welsch, R. E. (1980).
-  \emph{Regression Diagnostics}.
-  New York: Wiley.
+\emph{Regression Diagnostics}. New York: Wiley.
 
-  Cook, R. D. and Weisberg, S. (1982).
-  \emph{Residuals and Influence in Regression}.
-  London: Chapman and Hall.
+Cook, R. D. and Weisberg, S. (1982).
+\emph{Residuals and Influence in Regression}. London: Chapman and Hall.
 
-  Williams, D. A. (1987).
-  Generalized linear model diagnostics using the deviance and single
-  case deletions.
-  \emph{Applied Statistics}, \bold{36}, 181--191.
-  \ifelse{text}{doi:10.2307/2347550 <https://doi.org/10.2307/2347550>}{\ifelse{latex}{\href{https://doi.org/10.2307/2347550}{doi:10.2307\out{\\slash{}}2347550}}{\href{https://doi.org/10.2307/2347550}{doi:10.2307/2347550}}}.
-
-  Fox, J. (1997).
-  \emph{Applied Regression, Linear Models, and Related Methods}.
-  Sage.
-
-  Fox, J. (2002)
-  \emph{An R and S-Plus Companion to Applied Regression}.
-  Sage Publ.
-
-  Fox, J. and Weisberg, S. (2019).
-  \emph{An R Companion to Applied Regression}, third edition.
-  Sage Publications.
-  \url{https://www.john-fox.ca/Companion/}.
+Williams, D. A. (1987). Generalized linear model diagnostics using the
+deviance and single case deletions. \emph{Applied Statistics}, \bold{36},
+181--191. \doi{10.2307/2347550}
 }
 \seealso{
 \code{\link[stats]{influence}} (containing \code{\link[stats]{lm.influence}}).

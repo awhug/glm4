@@ -15,6 +15,10 @@ NULL
 family.glm4 <- function (object, ...) object$family
 
 #' @inherit stats::logLik
+#' @references
+#' Harville, D.A. (1974). Bayesian inference for variance components using
+#' only error contrasts. \emph{Biometrika}, \bold{61}, 383--385.
+#' \doi{10.2307/2334370}
 #' @examples NULL
 #' @export
 #' @keywords internal
@@ -261,6 +265,16 @@ labels.glm4 <- function(object, ...) attr(object$terms, "term.labels")
 #' @param batch_size integer; number of rows processed per batch when the model matrix is sparse. Reduce if memory is limited.
 #' @param verbose logical; if `TRUE`, a progress bar is printed during the batched sparse computation.
 #' @return A numeric vector of hat values (leverages), one per observation.
+#' @references
+#' Belsley, D. A., Kuh, E. and Welsch, R. E. (1980).
+#' \emph{Regression Diagnostics}. New York: Wiley.
+#'
+#' Cook, R. D. and Weisberg, S. (1982).
+#' \emph{Residuals and Influence in Regression}. London: Chapman and Hall.
+#'
+#' Williams, D. A. (1987). Generalized linear model diagnostics using the
+#' deviance and single case deletions. \emph{Applied Statistics}, \bold{36},
+#' 181--191. \doi{10.2307/2347550}
 #' @importFrom stats hatvalues
 #' @export
 #' @keywords internal
@@ -319,6 +333,16 @@ influence.glm4 <- function(model, batch_size = 1000L, verbose = FALSE, ...) {
 
 #' @inherit stats::rstandard
 #' @return A numeric vector of standardised residuals, one per observation.
+#' @references
+#' Belsley, D. A., Kuh, E. and Welsch, R. E. (1980).
+#' \emph{Regression Diagnostics}. New York: Wiley.
+#'
+#' Cook, R. D. and Weisberg, S. (1982).
+#' \emph{Residuals and Influence in Regression}. London: Chapman and Hall.
+#'
+#' Williams, D. A. (1987). Generalized linear model diagnostics using the
+#' deviance and single case deletions. \emph{Applied Statistics}, \bold{36},
+#' 181--191. \doi{10.2307/2347550}
 #' @importFrom stats rstandard
 #' @export
 #' @keywords internal
@@ -334,6 +358,16 @@ rstandard.glm4 <- function(model,
 
 #' @inherit stats::cooks.distance
 #' @return A numeric vector of Cook's distances, one per observation.
+#' @references
+#' Belsley, D. A., Kuh, E. and Welsch, R. E. (1980).
+#' \emph{Regression Diagnostics}. New York: Wiley.
+#'
+#' Cook, R. D. and Weisberg, S. (1982).
+#' \emph{Residuals and Influence in Regression}. London: Chapman and Hall.
+#'
+#' Williams, D. A. (1987). Generalized linear model diagnostics using the
+#' deviance and single case deletions. \emph{Applied Statistics}, \bold{36},
+#' 181--191. \doi{10.2307/2347550}
 #' @importFrom stats cooks.distance
 #' @export
 #' @keywords internal

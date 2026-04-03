@@ -61,12 +61,9 @@ This function is generic; method functions can be written to handle
 NULL
 }
 \references{
-For \code{logLik.lm}:
-
-  Harville, D.A. (1974).
-  Bayesian inference for variance components using only error contrasts.
-  \emph{Biometrika}, \bold{61}, 383--385.
-  \ifelse{text}{doi:10.2307/2334370 <https://doi.org/10.2307/2334370>}{\ifelse{latex}{\href{https://doi.org/10.2307/2334370}{doi:10.2307\out{\\slash{}}2334370}}{\href{https://doi.org/10.2307/2334370}{doi:10.2307/2334370}}}.
+Harville, D.A. (1974). Bayesian inference for variance components using
+only error contrasts. \emph{Biometrika}, \bold{61}, 383--385.
+\doi{10.2307/2334370}
 }
 \seealso{
 \code{\link[nlme]{logLik.gls}}, \code{\link[nlme]{logLik.lme}}, in
