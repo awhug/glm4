@@ -75,8 +75,10 @@ This took `r unname(round(run_time['elapsed'], 1))` seconds to fit.
 We can briefly inspect the output:
 
 ```{r}
-options(max.print = 20)
+# Only print a subset of the output, restoring existing max.print after
+old_options <- options(max.print = 20)
 print(fit)
+options(old_options)
 ```
 
 For a saturated factor model, the model-implied probability for each level equals the observed proportion exactly. We can verify this: the inverse-logit of the level-specific linear predictor should match the raw sample mean.
@@ -87,10 +89,6 @@ plogis(sum(coef(fit)[1:2]))
 
 # Should equal the observed proportion
 with(df, mean(y[level == 2]))
-```
-
-```{r, include=FALSE}
-options(max.print = 50)
 ```
 
 

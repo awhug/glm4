@@ -10,6 +10,9 @@
 NULL
 
 #' @inherit stats::family
+#' @examples
+#' fit <- glm4(mpg ~ cyl + wt, data = mtcars, family = gaussian())
+#' family(fit)
 #' @export
 #' @keywords internal
 family.glm4 <- function (object, ...) object$family
