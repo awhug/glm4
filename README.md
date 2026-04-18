@@ -1,5 +1,9 @@
 # glm4
 
+[![CRAN status](https://www.r-pkg.org/badges/version/glm4)](https://CRAN.R-project.org/package=glm4)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/glm4)](https://CRAN.R-project.org/package=glm4)
+[![License: GPL (>= 2)](https://img.shields.io/badge/License-GPL%20(%3E%3D%202)-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+
 ## Overview
 
 `glm4` is an R package to help fit and evaluate generalised linear models (GLMs) on large, high-dimensional datasets where standard approaches run out of memory.
@@ -20,7 +24,13 @@ The interface is intentionally close to `stats::glm()` and associated methods an
 
 ## Installation
 
-`glm4` is not yet on CRAN. Install the development version from GitHub with:
+Install the released version from CRAN:
+
+```r
+install.packages("glm4")
+```
+
+Or install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
